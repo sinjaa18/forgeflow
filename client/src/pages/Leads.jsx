@@ -5,7 +5,6 @@ import Navbar from "../components/Navbar";
 
 function Leads() {
   const [leads, setLeads] = useState([]);
-
   const [form, setForm] = useState({
     company: "",
     contactPerson: "",
@@ -15,10 +14,15 @@ function Leads() {
     status: "New",
   });
 
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [loading, setLoading] = useState(true);
+
   const token = localStorage.getItem("token");
 
   const fetchLeads = async () => {
     try {
+      setLoading(true);
       const res = await fetch("http://localhost:5000/api/leads", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -26,10 +30,11 @@ function Leads() {
       });
 
       const data = await res.json();
-
       setLeads(data);
     } catch (err) {
       console.log(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -71,7 +76,16 @@ function Leads() {
       console.log(err);
     }
   };
+  const filteredLeads = leads.filter((lead) => {
+    const matchesSearch = lead.company
+      .toLowerCase()
+      .includes(search.toLowerCase());
 
+    const matchesStatus =
+      statusFilter === "All" || lead.status === statusFilter;
+
+    return matchesSearch && matchesStatus;
+  });
   return (
     <div className="flex">
       <Sidebar />
@@ -80,13 +94,13 @@ function Leads() {
         <Navbar />
 
         <div className="p-6">
-          <div className="flex justify-between items-center mb-6">
+          <div className="flex justify-center items-center mb-6">
             <h1 className="text-4xl font-bold">Leads</h1>
           </div>
 
           <form
             onSubmit={handleSubmit}
-            className="grid grid-cols-3 gap-4 bg-slate-800 p-5 rounded-xl mb-8"
+            className="grid grid-cols-3 gap-2 bg-slate-800 p-3 rounded-xl mb-7"
           >
             <input
               type="text"
@@ -153,31 +167,63 @@ function Leads() {
           </form>
 
           <div className="bg-slate-800 rounded-xl overflow-hidden">
+            <div className="flex gap mb-2">
+              <input
+                type="text"
+                placeholder="Search company..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="flex-1 m-1 p-3 rounded bg-slate-900 border border-gray-400 outline-none"
+              />
+
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="p-3 m-1 rounded border border-gray-400 w-[15%] bg-slate-900"
+              >
+                <option>All</option>
+                <option>New</option>
+                <option>Contacted</option>
+                <option>Negotiation</option>
+                <option>Proposal</option>
+                <option>Won</option>
+                <option>Lost</option>
+              </select>
+            </div>
             <table className="w-full">
               <thead className="bg-slate-900">
                 <tr>
                   <th className="p-4 text-left">Company</th>
-
                   <th className="p-4 text-left">Contact</th>
-
                   <th className="p-4 text-left">Status</th>
-
                   <th className="p-4 text-left">Deal Value</th>
                 </tr>
               </thead>
 
               <tbody>
-                {leads.map((lead) => (
-                  <tr key={lead._id} className="border-t border-slate-700">
-                    <td className="p-4">{lead.company}</td>
-
-                    <td className="p-4">{lead.contactPerson}</td>
-
-                    <td className="p-4">{lead.status}</td>
-
-                    <td className="p-4">${lead.dealValue}</td>
+                {loading ? (
+                  <tr>
+                    <td colSpan="4" className="p-6 text-center">
+                      Loading...
+                    </td>
                   </tr>
-                ))}
+                ) : (
+                  filteredLeads.map((lead) => (
+                    <tr key={lead._id} className="border-t border-slate-700">
+                      <td className="p-4">{lead.company}</td>
+                      <td className="p-4">{lead.contactPerson}</td>
+                      <td className="p-4">{lead.status}</td>
+                      <td className="p-4">${lead.dealValue}</td>
+                    </tr>
+                  ))
+                )}
+                {filteredLeads.length === 0 && (
+                  <tr>
+                    <td colSpan="4" className="p-6 text-center text-slate-400">
+                      No leads found
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

@@ -5,6 +5,7 @@ import mongoose from "mongoose"
 
 import authRoutes from "./routes/authRoutes.js"
 import leadRoutes from "./routes/leadRoutes.js"
+import activityRoutes from "./routes/activityRoutes.js"
 
 dotenv.config()
 
@@ -22,6 +23,7 @@ app.get("/",(req,res)=>{
 })
 app.use("/api/auth",authRoutes)
 app.use("/api/leads",leadRoutes)
+app.use("/api/activity",activityRoutes)
 
 mongoose.connect(process.env.MONGO_URI).then(()=>{
     app.listen(5000,()=>{
