@@ -5,3 +5,13 @@ body{
  color:white;
  font-family:sans-serif;
 }
+
+::-webkit-scrollbar{
+ width:6px;
+ height:6px;
+}
+
+::-webkit-scrollbar-thumb{
+ background:#334155;
+ border-radius:10px;
+}
