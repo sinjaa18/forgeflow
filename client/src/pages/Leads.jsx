@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
+import API_URL from "../config/api";
 
 function Leads() {
+  document.title = "Leads | ForgeFlow";
   const [leads, setLeads] = useState([]);
   const [form, setForm] = useState({
     company: "",
@@ -23,7 +25,7 @@ function Leads() {
   const fetchLeads = async () => {
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:5000/api/leads", {
+      const res = await fetch(`${API_URL}/leads`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -53,7 +55,7 @@ function Leads() {
     e.preventDefault();
 
     try {
-      await fetch("http://localhost:5000/api/leads", {
+      await fetch(`${API_URL}/leads`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -93,14 +95,14 @@ function Leads() {
       <div className="flex-1">
         <Navbar />
 
-        <div className="p-6">
+        <div className="p-4 md:p-6">
           <div className="flex justify-center items-center mb-6">
             <h1 className="text-4xl font-bold">Leads</h1>
           </div>
 
           <form
             onSubmit={handleSubmit}
-            className="grid grid-cols-3 gap-2 bg-slate-800 p-3 rounded-xl mb-7"
+            className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-2 bg-slate-800 p-3 rounded-xl mb-7"
           >
             <input
               type="text"
@@ -161,12 +163,12 @@ function Leads() {
               <option>Lost</option>
             </select>
 
-            <button className="bg-blue-600 p-3 rounded col-span-3">
+            <button className="bg-blue-600 hover:bg-blue-700 transition p-3 rounded lg:col-span-3 md:col-span-2 col-span-1">
               Add Lead
             </button>
           </form>
 
-          <div className="bg-slate-800 rounded-xl overflow-hidden">
+          <div className="bg-slate-800 rounded-xl overflow-x-auto">
             <div className="flex gap mb-2">
               <input
                 type="text"
@@ -179,7 +181,7 @@ function Leads() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="p-3 m-1 rounded border border-gray-400 w-[15%] bg-slate-900"
+                className="p-3 m-1 rounded border border-gray-400 md:w-[15%] w-full bg-slate-900"
               >
                 <option>All</option>
                 <option>New</option>

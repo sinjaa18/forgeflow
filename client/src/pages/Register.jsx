@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
+import API_URL from "../config/api.js"
 function Register() {
   const navigate = useNavigate();
 
@@ -21,7 +21,7 @@ function Register() {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/register", {
+      const res = await fetch(`${API_URL}/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -30,6 +30,11 @@ function Register() {
       });
 
       const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.msg);
+        return;
+      }
 
       localStorage.setItem("token", data.token);
 

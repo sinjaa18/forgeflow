@@ -5,7 +5,7 @@ function Navbar() {
 
   const logout = () => {
     localStorage.removeItem("token");
-
+    localStorage.clear();
     navigate("/");
   };
 

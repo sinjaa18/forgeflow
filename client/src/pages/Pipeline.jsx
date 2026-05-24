@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
+import API_URL from "../config/api";
 
 function Pipeline() {
+  document.title = "Pipeline | ForgeFlow";
   const [leads, setLeads] = useState([]);
 
   const token = localStorage.getItem("token");
@@ -19,7 +21,7 @@ function Pipeline() {
 
   const fetchLeads = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/leads", {
+      const res = await fetch(`${API_URL}/leads`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -39,7 +41,7 @@ function Pipeline() {
 
   const updateStatus = async (id, status) => {
     try {
-      await fetch(`http://localhost:5000/api/leads/${id}`, {
+      await fetch(`${API_URL}/leads/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

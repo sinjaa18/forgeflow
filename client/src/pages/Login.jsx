@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import API_URL from "../config/api";
 
 function Login() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ function Login() {
     e.preventDefault();
 
     try {
-      const res = await fetch("http://localhost:5000/api/auth/login", {
+      const res = await fetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -30,7 +31,14 @@ function Login() {
       });
 
       const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.msg);
+        return;
+      }
+
       localStorage.setItem("token", data.token);
+
       navigate("/dashboard");
     } catch (err) {
       console.log(err);

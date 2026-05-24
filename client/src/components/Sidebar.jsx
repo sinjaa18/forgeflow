@@ -8,7 +8,7 @@ function Sidebar() {
     { name: "Pipeline", path: "/pipeline" },
   ];
   return (
-    <div className="w-[250px] bg-slate-900 h-screen p-5">
+    <div className=" md:block w-[270px] bg-slate-900 h-screen p-5">
       <h1 className="text-3xl font-bold mb-10">ForgeFlow</h1>
 
       <div className="flex flex-col gap-3">
